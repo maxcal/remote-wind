@@ -12,11 +12,7 @@ class ObservationsController < ApplicationController
 
   # POST /observations
   def create
-    # Find station via ID or SLUG
-    @observation = Observation.new(observation_params)
-    if @observation.station.nil? && !@station.nil?
-      @observation.station = @station
-    end 
+    @observation = @station.observations.new(observation_params)
     if @observation.save
       render nothing: true, status: :ok
     else
@@ -58,7 +54,6 @@ class ObservationsController < ApplicationController
 
   # DELETE /stations/:station_id/observations
   def clear
-    # get station with Friendly Id, params[:id] can either be id or slug
     Observation.delete_all("station_id = #{@station.id}")
     respond_to do |format|
       format.html { redirect_to station_url(@station) }
